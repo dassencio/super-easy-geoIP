@@ -112,6 +112,9 @@ def query_database(ip_address):
 		last = first + block - 1
 		filename = "database/geoid-ip6-%d-%d.bin" % (first, last)
 
+	geoid = None
+
+	# get the geoname ID for the given IP address (if available)
 	if os.path.isfile(filename):
 		with open(filename) as segment_file:
 			while True:
