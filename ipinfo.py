@@ -39,15 +39,16 @@ if __name__ == '__main__':
 	show_header = not namespace.no_header
 	ip_address = namespace.ip_address
 
-	# user's IP address
-	if "REMOTE_ADDR" in os.environ.keys():
+	# first try the queries sent to the server
+	queries = get_queries()
+	if 'q' in queries:
+		ip_address = queries['q']
+	if 'format' in queries:
+		output_format = queries['format']
+
+	# if no IP address was sent via queries, take the user's IP
+	if ip_address is None and "REMOTE_ADDR" in os.environ.keys():
 		ip_address = os.environ["REMOTE_ADDR"]
-	else:
-		queries = get_queries()
-		if 'q' in queries:
-			ip_address = queries['q']
-		if 'format' in queries:
-			output_format = queries['format']
 
 	if show_header:
 		if output_format == "json":
