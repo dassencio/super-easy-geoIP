@@ -100,7 +100,7 @@ def query_database(ip_address):
 
 	ip_info = IPInfo(ip_address)
 
-	# get the geoname ID for the given IP address
+	# determine which file contains the geoname ID for the given IP address
 	if version == socket.AF_INET:
 		block = ip4_block
 		first = (ip_integer // block) * block
