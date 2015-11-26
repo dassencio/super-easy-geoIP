@@ -1,0 +1,171 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+import os
+import csv
+import urllib
+import shutil
+import pickle
+import zipfile
+
+from config import *
+from ipfunctions import *
+
+
+# a task "enumeration" class
+class Tasks:
+	GeonameID4 = 0
+	GeonameID6 = 1
+	Location = 2
+
+
+##
+# @brief removes the current database and recreates its directory
+#
+def reset_database():
+	if os.path.exists("database/"):
+		print("Removing existing database")
+		shutil.rmtree('database/', ignore_errors=True)
+	os.makedirs("database/")
+
+
+##
+# @brief downloads a file whose location is given by an URL
+# @note the file is placed on the current directory (with the same name as
+#       specified in the URL)
+#
+def download_file(url):
+
+	filename = url.split('/')[-1]
+	print("Downloading %s" % filename)
+
+	urllib.urlretrieve (url, filename)
+
+
+##
+# @brief extracts all the files in a ZIP file and places them on the working
+#        directory (the internal directory hierarchy of the ZIP file is
+#        ignored)
+#
+def extract_zip(zipfilename):
+
+	print("Decompressing %s" % zipfilename)
+
+	with open(zipfilename, 'rb') as ziphandle:
+		contents = zipfile.ZipFile(ziphandle)
+		for filename in contents.namelist():
+			print("Extracting %s" % filename)
+			output = open(filename.split("/")[-1], 'wb')
+			output.write(contents.read(filename))
+			output.close()
+		ziphandle.close()
+
+
+##
+# @brief segments a database stored on a file into smaller binary files (in
+#        pickle format) with a given prefix; task specifies the task type
+#        and is used to determine the database schema
+#
+def segment_database(filename, prefix, task):
+
+	print("Breaking %s into smaller chunks" % filename)
+
+	with open(filename, 'r') as csvfile:
+
+		# open the database reader and skip the header row
+		database = csv.reader(csvfile)
+		next(database)
+
+		first = 0
+		block = (ip4_block, ip6_block, geoid_block)[task]
+
+		segment_file = open("database/%s-%d-%d.bin" % (
+			prefix, first, first + block - 1), 'wb'
+		)
+
+		for row in database:
+
+			# for geoname ID databases, the first column is the
+			# netmask and the second is its associated geoname ID
+			if task == Tasks.GeonameID4 or task == Tasks.GeonameID6:
+
+				(lower,upper) = netmask_to_ip_range(row[0])
+				geoname_id = row[1]
+
+				# ignore incomplete rows (no geoname ID)
+				if geoname_id == "":
+					continue
+
+				to_dump = [lower, upper, int(geoname_id)]
+				newfile = lower >= first + block
+
+			# for location databases, the first row contains the
+			# geoname ID and the rest is geographical information
+			else:
+				geoname_id = int(row[0])
+				to_dump = [geoname_id] + row[1:]
+				newfile = geoname_id >= first + block
+
+			# create the next segment file if necessary (if we
+			# jumped out of the IP/location block for the current
+			# one)
+			if newfile == True:
+
+				segment_file.close()
+				first += block
+				segment_file = open("database/%s-%d-%d.bin" % (
+					prefix, first, first + block - 1), 'wb'
+				)
+
+			pickle.dump(to_dump, segment_file)
+
+	segment_file.close()
+
+
+##
+# @brief removes all temporary (generated) files
+#
+def remove_temporary_files():
+
+	print("Removing temporary files")
+
+	for root, dirs, files in os.walk("./"):
+		for filename in files:
+			exts = ('.csv', '.zip', '.txt')
+			if any(filename.lower().endswith(ext) for ext in exts):
+				print("Removing %s" % filename)
+				os.remove(os.path.join(root, filename))
+
+
+def generate_database():
+
+	reset_database()
+
+	base_url = "http://geolite.maxmind.com/download/geoip/database/"
+	download_file(base_url + "GeoLite2-City-CSV.zip")
+
+	extract_zip("GeoLite2-City-CSV.zip")
+
+	# break the geoname ID database into smaller (pickle) chunks
+	# scheme: [first IP, last IP, gename ID]
+	segment_database("GeoLite2-City-Blocks-IPv4.csv", "geoid-ip4", Tasks.GeonameID4)
+	segment_database("GeoLite2-City-Blocks-IPv6.csv", "geoid-ip6", Tasks.GeonameID6)
+
+	# break the city database into smaller (pickle) chunks
+	# scheme: [geoname ID, locale code, continent code, continent name,
+	#          country ISO code, country ISO name, subdivision 1 ISO_code,
+	#          subdivision 1 name, subdivision 2 ISO code, subdivision 2 name,
+	#          city name, metro code, time zone location ID, region, city,
+	#          postal code]
+	segment_database("GeoLite2-City-Locations-en.csv", "city", Tasks.Location)
+
+	remove_temporary_files()
+
+	print("Done!")
+
+
+if __name__ == '__main__':
+	generate_database()
+
+
