@@ -1,3 +1,3 @@
 Options +ExecCGI
-DirectoryIndex ipinfo.py
+DirectoryIndex easy-geoip.py
 

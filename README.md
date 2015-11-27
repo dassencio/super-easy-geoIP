@@ -84,14 +84,14 @@ Using easy-geoip as a stand-alone command-line tool
 
 You don't need to use easy-geoip as a server. After you generate the database,
 you can get IP geolocation data directly on your terminal. For that, just run
-``ipinfo.py`` as in the example below:
+``easy-geoip.py`` as in the example below:
 
-	./ipinfo.py -i 8.8.8.8
+	./easy-geoip.py -i 8.8.8.8
 
 You can specify the output format too. For instance, to output plain text
 instead of JSON, run:
 
-	./ipinfo.py -f plain -i 8.8.8.8
+	./easy-geoip.py -f plain -i 8.8.8.8
 
 
 Contributors & contact information
