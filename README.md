@@ -29,8 +29,8 @@ months) to make sure the geolocation data is accurate.
 If you (or your web host provider) use Apache, the server should already be
 working. Try opening the root page where you are hosting easy-geoIP
 (e.g. ``my-domain.org/geoip``); if everything is working, you will see the
-geolocation information for you own IP address. This is the type of output
-you should see:
+geolocation data for you own IP address. This is the type of output you should
+see:
 
 	{
 	  "subdivision1": {
@@ -71,8 +71,8 @@ Using easy-geoIP as a stand-alone command-line tool
 ==================================================
 
 You don't need to use easy-geoIP as a server. After you generate the database,
-you can get IP geolocation information directly on your terminal. For that,
-just run ``ipinfo.py`` directly. Here is an example:
+you can get IP geolocation data directly on your terminal. For that, just run
+``ipinfo.py`` directly. Here is an example:
 
 	./ipinfo.py -i 8.8.8.8
 
