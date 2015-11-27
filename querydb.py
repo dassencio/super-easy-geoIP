@@ -49,6 +49,7 @@ class IPInfo:
 	def to_string(self):
 
 		result  = "IP address: %s\n" % self.ip_address
+		result += "Locale code: %s\n" % self.locale_code
 		result += "Continent: %s (%s)\n" % (self.continent_name, self.continent_code)
 		result += "Country: %s (%s)\n" % (self.country_name, self.country_iso_code)
 		result += "Subdivision 1: %s (%s)\n" % (self.subdiv1_name, self.subdiv1_iso_code)
@@ -64,6 +65,7 @@ class IPInfo:
 
 		result = {
 			"ip": self.ip_address,
+			"locale_code": self.locale_code,
 			"continent": {
 				"name": self.continent_name,
 				"code": self.continent_code
