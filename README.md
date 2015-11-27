@@ -49,12 +49,13 @@ should see:
 	    "code": "CA",
 	    "name": "California"
 	  },
-	  "city": "Mountain View",
+	  "locale_code": "en",
 	  "time_zone": "America/Los_Angeles",
 	  "subdivision2": {
 	    "code": "Unknown",
 	    "name": "Unknown"
 	  },
+	  "city": "Mountain View",
 	  "country": {
 	    "code": "US",
 	    "name": "United States"
