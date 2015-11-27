@@ -138,7 +138,7 @@ def segment_database(filename, dbtype):
 		if row_num % block != 0:
 			pickle.dump((index_lower, index_upper), index_file)
 
-		print("  Number of segments created: %d" % segment_num)
+		print("  Number of segments created: %d" % (segment_num+1))
 		print("  Number of entries per segment: %d" % block)
 
 		segment_file.close()
