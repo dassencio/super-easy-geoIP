@@ -22,7 +22,7 @@ def netmask_to_ip_range(netmask_cidr):
 		ip_address = fragments[0]
 		netmask_len = int(fragments[1])
 
-		for (max_len, version) in [(32,socket.AF_INET), (128,socket.AF_INET6)]:
+		for (max_len, version) in ((32,socket.AF_INET), (128,socket.AF_INET6)):
 
 			try:
 				suffix_mask = (1 << (max_len - netmask_len)) - 1
