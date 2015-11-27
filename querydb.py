@@ -119,7 +119,7 @@ def query_database(ip_address):
 						geoid_segment = segment_num
 						break
 					segment_num += 1
-				# IP address is not in any listed subnetwork
+				# if the IP address is not in any listed subnetwork
 				except EOFError:
 					return ip_info
 	except:
@@ -136,7 +136,7 @@ def query_database(ip_address):
 					if row[0] <= ip_integer <= row[1]:
 						geoid = row[2]
 						break
-				# IP address is not in any listed subnetwork
+				# if the IP address is not in any listed subnetwork
 				except EOFError:
 					return ip_info
 	except IOError:
