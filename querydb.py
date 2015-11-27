@@ -101,7 +101,7 @@ def query_database(ip_address):
 	try:
 		(ip_integer,version) = ip_to_integer(ip_address)
 	except:
-		raise ValueError("Invalid IP address.")
+		raise ValueError("invalid IP address.")
 
 	ip_info = IPInfo(ip_address)
 
