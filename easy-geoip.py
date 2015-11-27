@@ -45,10 +45,11 @@ if __name__ == '__main__':
 	# this part only applies if the script is executed on a web server
 	if "REMOTE_ADDR" in os.environ.keys():
 		show_header = True
-		ip_address = os.environ["REMOTE_ADDR"]
 		queries = get_queries()
 		if 'q' in queries:
 			ip_address = queries['q']
+		else:
+			ip_address = os.environ["REMOTE_ADDR"]
 		if 'format' in queries:
 			output_format = queries['format']
 
