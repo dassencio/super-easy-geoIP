@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import os
 import json
 import pickle
 
@@ -10,6 +9,7 @@ from config import *
 from ipfunctions import *
 
 
+# class which holds geolocation data for an IP address
 class IPInfo:
 
 	def __init__(self, ip_address):
@@ -45,6 +45,7 @@ class IPInfo:
 		 self.metro_code,
 		 self.time_zone) = ["Unknown" if field == "" else field for field in row]
 
+	# returns all geolocation data as a multi-line string
 	def to_string(self):
 
 		result  = "IP address: %s\n" % self.ip_address
@@ -58,6 +59,7 @@ class IPInfo:
 
 		return result
 
+	# returns all geolocation data as a JSON string
 	def to_json(self):
 
 		result = {
@@ -87,12 +89,12 @@ class IPInfo:
 
 
 ##
-# @brief returns all available information for a given IP address as an
+# @brief returns all available geolocation data for a given IP address as an
 #        IPInfo object
 #
 def query_database(ip_address):
 
-	# convert the IP address into an integer ip_integer
+	# convert the IP address into an integer and get its version
 	try:
 		(ip_integer,version) = ip_to_integer(ip_address)
 	except:
@@ -100,68 +102,65 @@ def query_database(ip_address):
 
 	ip_info = IPInfo(ip_address)
 
-	# obtain the name of the file in which the geoname ID of the
+	# obtain the name of the segment file in which the geoname ID for the
 	# given IP address is stored
 	geoid_segment = None
-
 	try:
 		index_filename = "database/index-geoid-ip%d" % version
 		with open(index_filename) as index_file:
-			current = 0
+			segment_num = 0
 			while True:
 				try:
 					row = pickle.load(index_file)
 					if row[0] <= ip_integer <= row[1]:
-						geoid_segment = current
+						geoid_segment = segment_num
 						break
-					current += 1
+					segment_num += 1
+				# IP address is not in any listed subnetwork
 				except EOFError:
 					return ip_info
 	except:
-		raise Exception("index file not found on database")
-
-	# if the IP address is not in any subnetwork in the database
-	if geoid_segment is None:
-		return ip_info
-
-	geoid = None
+		raise Exception("geoname ID index file was not found on database")
 
 	# get the geoname ID for the given IP address
+	geoid = None
 	try:
-		geoid_filename = "database/geoid-ip%d-%d" % (version, geoid_segment)
-		with open(geoid_filename) as segment_file:
+		segment_filename = "database/geoid-ip%d-%d" % (version, geoid_segment)
+		with open(segment_filename) as segment_file:
 			while True:
 				try:
 					row = pickle.load(segment_file)
 					if row[0] <= ip_integer <= row[1]:
 						geoid = row[2]
 						break
+				# IP address is not in any listed subnetwork
 				except EOFError:
-					break
+					return ip_info
 	except IOError:
-		raise Exception("database does not exist or is corrupted")
+		raise Exception("geoname ID segment file was not found on database")
 
-	# obtain the name of the file in which the location of the given IP
-	# address is stored
+	# obtain the name of the segment file in which the geolocation data for
+	# the given IP address is stored
 	location_segment = None
-
 	try:
 		index_filename = "database/index-location"
 		with open(index_filename) as index_file:
-			current = 0
+			segment_num = 0
+			# since we got a geoname ID, this loop MUST succeed
 			while True:
 				row = pickle.load(index_file)
 				if row[0] <= geoid <= row[1]:
-					location_segment = current
+					location_segment = segment_num
 					break
-				current += 1
+				segment_num += 1
 	except:
 		raise Exception("database does not exist or is corrupted")
 
-	# get the geographical information for the given IP address
+	# get the geolocation data for the given IP address
 	try:
-		location_filename = "database/location-%d" % location_segment
-		with open(location_filename) as segment_file:
+		segment_filename = "database/location-%d" % location_segment
+		# since we got a geoname ID, this loop MUST succeed
+		with open(segment_filename) as segment_file:
 			while True:
 				row = pickle.load(segment_file)
 				if row[0] == geoid:
