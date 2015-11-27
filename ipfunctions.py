@@ -52,7 +52,7 @@ def ip_to_integer(ip_address):
 			ip_hexstr = socket.inet_pton(version, ip_address)
 			ip_integer = int(binascii.hexlify(ip_hexstr), 16)
 
-			return (ip_integer, version)
+			return (ip_integer, 4 if version == socket.AF_INET else 6)
 		except:
 			pass
 
