@@ -60,7 +60,7 @@ should see:
 	    "code": "US",
 	    "name": "United States"
 	  },
-	  "ip": "8.8.8.8",
+	  "ip_address": "8.8.8.8",
 	  "continent": {
 	    "code": "NA",
 	    "name": "North America"
