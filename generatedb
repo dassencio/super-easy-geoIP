@@ -180,7 +180,7 @@ def generate_database():
 
 	# break the city database into smaller segments
 	# scheme: [geoname ID, locale code, continent code, continent name,
-	#          country ISO code, country ISO name, subdivision 1 ISO_code,
+	#          country ISO code, country ISO name, subdivision 1 ISO code,
 	#          subdivision 1 name, subdivision 2 ISO code, subdivision 2
 	#          name, city name, metro code, time zone]
 	segment_database("GeoLite2-City-Locations-en.csv", Database.Location)
