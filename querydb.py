@@ -157,7 +157,7 @@ def query_database(ip_address):
 					break
 				segment_num += 1
 	except:
-		raise Exception("database does not exist or is corrupted")
+		raise Exception("location index file was not found on database")
 
 	# get the geolocation data for the given IP address
 	try:
@@ -170,6 +170,6 @@ def query_database(ip_address):
 					ip_info.set_values(row)
 					break
 	except:
-		raise Exception("database does not exist or is corrupted")
+		raise Exception("location segment file was not found on database")
 
 	return ip_info
