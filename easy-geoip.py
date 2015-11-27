@@ -66,7 +66,7 @@ if __name__ == '__main__':
 		elif output_format == "plain":
 			print(ip_info.to_string())
 		else:
-			raise Exception("Invalid output format.")
+			raise Exception("invalid output format (%s).", output_format)
 	except Exception as e:
 		print(str(e))
 		sys.exit(1)
