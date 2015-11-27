@@ -20,10 +20,9 @@ class Database:
 	Location = 2
 
 
-##
-# @brief removes the current database and recreates its directory
-#
 def reset_database():
+
+	"""Removes the current database and recreates its directory."""
 
 	if os.path.exists("database/"):
 		print("Removing existing database")
@@ -32,12 +31,12 @@ def reset_database():
 	os.makedirs("database/")
 
 
-##
-# @brief downloads a file pointed to by an URL
-# @note the file is placed on the current directory (with the same name as
-#       specified in the URL)
-#
 def download_file(url):
+
+	"""
+	Downloads a file pointed to by an URL and stores it on the current
+	directory (with the same name as specified in the URL).
+	"""
 
 	filename = url.split('/')[-1]
 	print("Downloading %s" % filename)
@@ -45,12 +44,13 @@ def download_file(url):
 	urllib.urlretrieve (url, filename)
 
 
-##
-# @brief extracts all the files in a ZIP file and places them on the working
-#        directory (the internal directory hierarchy of the ZIP file is
-#        ignored)
-#
 def extract_zip(zipfilename):
+
+	"""
+	Extracts all the files in a ZIP file and places them on the working
+	directory (the internal directory hierarchy of the ZIP file is
+	ignored).
+	"""
 
 	print("Decompressing %s" % zipfilename)
 	with open(zipfilename, 'rb') as ziphandle:
@@ -66,12 +66,13 @@ def extract_zip(zipfilename):
 		ziphandle.close()
 
 
-##
-# @brief segments a database stored on a CSV file into small binary files
-# @param filename the name of the CSV file
-# @database the database type (one of the types in the Database class)
-#
 def segment_database(filename, dbtype):
+
+	"""
+	Segments a database stored on a CSV file into small binary files;
+	dbtype specifies the database type (one of the types in the Database
+	class).
+	"""
 
 	print("Breaking %s into small binary chunks" % filename)
 
@@ -146,10 +147,9 @@ def segment_database(filename, dbtype):
 		csvfile.close()
 
 
-##
-# @brief removes all generated temporary files
-#
 def remove_temporary_files():
+
+	"""Removes all generated temporary files."""
 
 	print("Removing temporary files")
 
@@ -162,10 +162,9 @@ def remove_temporary_files():
 				os.remove(os.path.join(root, filename))
 
 
-##
-# @brief generates the geolocation database
-#
 def generate_database():
+
+	"""Generates the geolocation database."""
 
 	reset_database()
 
