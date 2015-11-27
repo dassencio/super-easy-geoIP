@@ -7,11 +7,11 @@ import binascii
 
 
 ##
-# @brief returns a tuple (lower,upper) containing the integer representation
-#        of the lower and upper bounds of the IP address range specified by
-#        an input netmask
-# @note the netmask may be either an IPv4 netmask (e.g. "192.168.1.1/24") or
-#       an IPv6 netmask (e.g. "2a02:a448:ddb0::/44")
+# @brief returns a tuple (ip_lower, ip_upper) containing the integer
+#        representation of the lower and upper IP address values in the range
+#        specified by a given netmask string in CIDR notation
+# @note either IPv4 netmasks (e.g. "192.168.1.1/24") or IPv6 netmasks
+#       (e.g. "2a02:a448:ddb0::/44") are accepted
 #
 def netmask_to_ip_range(netmask_cidr):
 
@@ -23,12 +23,12 @@ def netmask_to_ip_range(netmask_cidr):
 		for (max_len, version) in [(32,socket.AF_INET), (128,socket.AF_INET6)]:
 
 			try:
-				suffixmask = (1 << (max_len - netmask_len)) - 1
-				netmask = ((1 << max_len) - 1) - suffixmask
+				suffix_mask = (1 << (max_len - netmask_len)) - 1
+				netmask = ((1 << max_len) - 1) - suffix_mask
 				ip_hex = socket.inet_pton(version, ip_address)
-				lower = int(binascii.hexlify(ip_hex), 16) & netmask
+				ip_lower = int(binascii.hexlify(ip_hex), 16) & netmask
 
-				return (lower, lower + suffixmask)
+				return (ip_lower, ip_lower + suffix_mask)
 			except:
 				pass
 	except:
@@ -38,14 +38,14 @@ def netmask_to_ip_range(netmask_cidr):
 
 
 ##
-# @brief converts an IP address into an integer value
-# @return (IP as integer, IP version)
+# @brief converts an IP address to its representation as an integer value
+# @return (IP as integer, IP version), with version being either 4 or 6
 # @note either IPv4 addresses (e.g. "192.168.1.1") or IPv6 addresses
 #       (e.g. "2a02:a448:ddb0::") are accepted
 #
 def ip_to_integer(ip_address):
 
-	# try parsing the input as IPv4, then IPv6
+	# try parsing the IP address first as IPv4, then IPv6
 	for version in (socket.AF_INET, socket.AF_INET6):
 
 		try:
