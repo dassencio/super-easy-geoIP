@@ -162,8 +162,8 @@ def query_database(ip_address):
 	# get the geolocation data for the given IP address
 	try:
 		segment_filename = "database/location-%d" % location_segment
-		# since we got a geoname ID, this loop MUST succeed
 		with open(segment_filename, 'rb') as segment_file:
+			# since we got a geoname ID, this loop MUST succeed
 			while True:
 				row = pickle.load(segment_file)
 				if row[0] == geoid:
