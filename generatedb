@@ -67,9 +67,14 @@ def extract_zip(zipfilename):
 #        pickle format) with a given prefix; task specifies the task type
 #        and is used to determine the database schema
 #
-def segment_database(filename, prefix, task):
+def segment_database(filename, task):
 
 	print("Breaking %s into smaller chunks" % filename)
+
+	prefix = ("geoid-ip4", "geoid-ip6", "location")[task]
+
+	index_filename = "database/index-%s" % prefix
+	index_file = open(index_filename, 'wb')
 
 	with open(filename, 'r') as csvfile:
 
@@ -77,49 +82,48 @@ def segment_database(filename, prefix, task):
 		database = csv.reader(csvfile)
 		next(database)
 
-		first = 0
+		current = 0
 		block = (ip4_block, ip6_block, geoid_block)[task]
 
-		segment_file = open("database/%s-%d-%d.bin" % (
-			prefix, first, first + block - 1), 'wb'
-		)
+		segment_file = open("database/%s-0" % prefix, 'wb')
 
+		index_lower = 0
 		for row in database:
 
 			# for geoname ID databases, the first column is the
 			# netmask and the second is its associated geoname ID
 			if task == Tasks.GeonameID4 or task == Tasks.GeonameID6:
 
-				(lower,upper) = netmask_to_ip_range(row[0])
+				(ip_lower,ip_upper) = netmask_to_ip_range(row[0])
 				geoname_id = row[1]
 
 				# ignore incomplete rows (no geoname ID)
 				if geoname_id == "":
 					continue
 
-				to_dump = [lower, upper, int(geoname_id)]
-				newfile = lower >= first + block
+				segment_object = [ip_lower, ip_upper, int(geoname_id)]
+				index_upper = ip_upper
 
 			# for location databases, the first row contains the
 			# geoname ID and the rest is geographical information
 			else:
 				geoname_id = int(row[0])
-				to_dump = [geoname_id] + row[1:]
-				newfile = geoname_id >= first + block
+				segment_object = [geoname_id] + row[1:]
+				index_upper = geoname_id
 
-			# create the next segment file if necessary (if we
-			# jumped out of the IP/location block for the current
-			# one)
-			if newfile == True:
+			pickle.dump(segment_object, segment_file)
 
-				segment_file.close()
-				first += block
-				segment_file = open("database/%s-%d-%d.bin" % (
-					prefix, first, first + block - 1), 'wb'
-				)
+			if (current+1) % block == 0:
 
-			pickle.dump(to_dump, segment_file)
+				pickle.dump((index_lower, index_upper), index_file)
+				index_lower = index_upper + 1
 
+				segment_file = open("database/%s-%d" %
+				                    (prefix, (current+1)/block), 'wb')
+
+			current += 1
+
+	index_file.close()
 	segment_file.close()
 
 
@@ -149,8 +153,8 @@ def generate_database():
 
 	# break the geoname ID database into smaller (pickle) chunks
 	# scheme: [first IP, last IP, gename ID]
-	segment_database("GeoLite2-City-Blocks-IPv4.csv", "geoid-ip4", Tasks.GeonameID4)
-	segment_database("GeoLite2-City-Blocks-IPv6.csv", "geoid-ip6", Tasks.GeonameID6)
+	segment_database("GeoLite2-City-Blocks-IPv4.csv", Tasks.GeonameID4)
+	segment_database("GeoLite2-City-Blocks-IPv6.csv", Tasks.GeonameID6)
 
 	# break the city database into smaller (pickle) chunks
 	# scheme: [geoname ID, locale code, continent code, continent name,
@@ -158,7 +162,7 @@ def generate_database():
 	#          subdivision 1 name, subdivision 2 ISO code, subdivision 2 name,
 	#          city name, metro code, time zone location ID, region, city,
 	#          postal code]
-	segment_database("GeoLite2-City-Locations-en.csv", "city", Tasks.Location)
+	segment_database("GeoLite2-City-Locations-en.csv", Tasks.Location)
 
 	remove_temporary_files()
 
