@@ -112,7 +112,7 @@ def segment_database(filename, dbtype):
 				index_upper = ip_upper
 
 			# for location databases, the first row contains the
-			# geoname ID and the rest is geographical information
+			# geoname ID and the rest is geolocation data
 			else:
 				geoname_id = int(row[0])
 				segment_object = [geoname_id] + row[1:]
