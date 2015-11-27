@@ -110,7 +110,7 @@ def query_database(ip_address):
 	geoid_segment = None
 	try:
 		index_filename = "database/index-geoid-ip%d" % version
-		with open(index_filename) as index_file:
+		with open(index_filename, 'r') as index_file:
 			segment_num = 0
 			while True:
 				try:
@@ -129,7 +129,7 @@ def query_database(ip_address):
 	geoid = None
 	try:
 		segment_filename = "database/geoid-ip%d-%d" % (version, geoid_segment)
-		with open(segment_filename) as segment_file:
+		with open(segment_filename, 'r') as segment_file:
 			while True:
 				try:
 					row = pickle.load(segment_file)
@@ -147,7 +147,7 @@ def query_database(ip_address):
 	location_segment = None
 	try:
 		index_filename = "database/index-location"
-		with open(index_filename) as index_file:
+		with open(index_filename, 'r') as index_file:
 			segment_num = 0
 			# since we got a geoname ID, this loop MUST succeed
 			while True:
@@ -163,7 +163,7 @@ def query_database(ip_address):
 	try:
 		segment_filename = "database/location-%d" % location_segment
 		# since we got a geoname ID, this loop MUST succeed
-		with open(segment_filename) as segment_file:
+		with open(segment_filename, 'r') as segment_file:
 			while True:
 				row = pickle.load(segment_file)
 				if row[0] == geoid:
