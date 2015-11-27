@@ -100,23 +100,36 @@ def query_database(ip_address):
 
 	ip_info = IPInfo(ip_address)
 
-	# determine which file contains the geoname ID for the given IP address
-	if version == socket.AF_INET:
-		block = ip4_block
-		first = (ip_integer // block) * block
-		last = first + block - 1
-		filename = "database/geoid-ip4-%d-%d.bin" % (first, last)
-	else:
-		block = ip6_block
-		first = (ip_integer // block) * block
-		last = first + block - 1
-		filename = "database/geoid-ip6-%d-%d.bin" % (first, last)
+	# obtain the name of the file in which the geoname ID of the
+	# given IP address is stored
+	geoid_segment = None
+
+	try:
+		index_filename = "database/index-geoid-ip%d" % version
+		with open(index_filename) as index_file:
+			current = 0
+			while True:
+				try:
+					row = pickle.load(index_file)
+					if row[0] <= ip_integer <= row[1]:
+						geoid_segment = current
+						break
+					current += 1
+				except EOFError:
+					return ip_info
+	except:
+		raise Exception("index file not found on database")
+
+	# if the IP address is not in any subnetwork in the database
+	if geoid_segment is None:
+		return ip_info
 
 	geoid = None
 
-	# get the geoname ID for the given IP address (if available)
-	if os.path.isfile(filename):
-		with open(filename) as segment_file:
+	# get the geoname ID for the given IP address
+	try:
+		geoid_filename = "database/geoid-ip%d-%d" % (version, geoid_segment)
+		with open(geoid_filename) as segment_file:
 			while True:
 				try:
 					row = pickle.load(segment_file)
@@ -125,20 +138,36 @@ def query_database(ip_address):
 						break
 				except EOFError:
 					break
+	except IOError:
+		raise Exception("database does not exist or is corrupted")
 
-	# get the available geographical information for the given IP address
-	if geoid is not None:
-		first = (geoid // geoid_block) * geoid_block
-		filename = "database/city-%d-%d.bin" % (first, first+geoid_block-1)
-		if os.path.isfile(filename):
-			with open(filename) as segment_file:
-				while True:
-					try:
-						row = pickle.load(segment_file)
-						if row[0] == geoid:
-							ip_info.set_values(row)
-							break
-					except EOFError:
-						break
+	# obtain the name of the file in which the location of the given IP
+	# address is stored
+	location_segment = None
+
+	try:
+		index_filename = "database/index-location"
+		with open(index_filename) as index_file:
+			current = 0
+			while True:
+				row = pickle.load(index_file)
+				if row[0] <= geoid <= row[1]:
+					location_segment = current
+					break
+				current += 1
+	except:
+		raise Exception("database does not exist or is corrupted")
+
+	# get the geographical information for the given IP address
+	try:
+		location_filename = "database/location-%d" % location_segment
+		with open(location_filename) as segment_file:
+			while True:
+				row = pickle.load(segment_file)
+				if row[0] == geoid:
+					ip_info.set_values(row)
+					break
+	except:
+		raise Exception("database does not exist or is corrupted")
 
 	return ip_info
