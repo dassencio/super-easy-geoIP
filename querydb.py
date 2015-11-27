@@ -64,7 +64,7 @@ class IPInfo:
 	def to_json(self):
 
 		result = {
-			"ip": self.ip_address,
+			"ip_address": self.ip_address,
 			"locale_code": self.locale_code,
 			"continent": {
 				"name": self.continent_name,
