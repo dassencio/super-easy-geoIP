@@ -6,14 +6,16 @@ import socket
 import binascii
 
 
-##
-# @brief returns a tuple (ip_lower, ip_upper) containing the integer
-#        representation of the lower and upper IP address values in the range
-#        specified by a given netmask string in CIDR notation
-# @note either IPv4 netmasks (e.g. "192.168.1.1/24") or IPv6 netmasks
-#       (e.g. "2a02:a448:ddb0::/44") are accepted
-#
 def netmask_to_ip_range(netmask_cidr):
+
+	"""
+	Returns a tuple (ip_lower, ip_upper) containing the integer
+	representation of the lower and upper IP address values in the
+        range specified by a given netmask string in CIDR notation.
+
+	Both IPv4 netmasks (e.g. "192.168.1.1/24") and IPv6 netmasks
+	(e.g. "2a02:a448:ddb0::/44") are accepted.
+	"""
 
 	try:
 		fragments = netmask_cidr.split('/')
@@ -37,13 +39,16 @@ def netmask_to_ip_range(netmask_cidr):
 	raise ValueError("invalid netmask")
 
 
-##
-# @brief converts an IP address to its representation as an integer value
-# @return (IP as integer, IP version), with version being either 4 or 6
-# @note either IPv4 addresses (e.g. "192.168.1.1") or IPv6 addresses
-#       (e.g. "2a02:a448:ddb0::") are accepted
-#
 def ip_to_integer(ip_address):
+
+	"""
+	Converts an IP address to its representation as an integer value\
+	and returns a tuple (ip_integer, iversion), with version being
+	either 4 or 6.
+
+	Both IPv4 addresses (e.g. "192.168.1.1") and IPv6 addresses
+	(e.g. "2a02:a448:ddb0::") are accepted
+	"""
 
 	# try parsing the IP address first as IPv4, then IPv6
 	for version in (socket.AF_INET, socket.AF_INET6):
