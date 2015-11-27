@@ -10,10 +10,9 @@ import argparse
 from querydb import *
 
 
-##
-# @brief returns the queries sent to the server as a python dictionary
-#
 def get_queries():
+
+	"""Returns the queries sent to the server as a python dictionary."""
 
 	# queries sent to the server
 	fs = cgi.FieldStorage()
