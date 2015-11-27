@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+import os
 import sys
 import cgi
 import argparse
@@ -29,26 +30,28 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', '--output-format', type=str, default="json",
 	                    help='specify the output format (default: json)')
-	parser.add_argument('-n', '--no-header', action='count', default=False,
-	                    help='omit Content-type header (default: no)')
 	parser.add_argument('-i', '--ip-address', type=str, default=None,
 	                    help='IP address')
 	namespace = parser.parse_args()
 
 	output_format = namespace.output_format
-	show_header = not namespace.no_header
 	ip_address = namespace.ip_address
 
-	# first try the queries sent to the server
-	queries = get_queries()
-	if 'q' in queries:
-		ip_address = queries['q']
-	if 'format' in queries:
-		output_format = queries['format']
+	# the Content-type header will only be shown if this script is
+	# executed on a web server, i.e., it will not be displayed on
+	# a terminal (unless you define an environment variable called
+	# "REMOTE_ADDR")
+	show_header = False
 
-	# if no IP address was sent via queries, take the user's IP
-	if ip_address is None and "REMOTE_ADDR" in os.environ.keys():
+	# this part only applies if the script is executed on a web server
+	if "REMOTE_ADDR" in os.environ.keys():
+		show_header = True
 		ip_address = os.environ["REMOTE_ADDR"]
+		queries = get_queries()
+		if 'q' in queries:
+			ip_address = queries['q']
+		if 'format' in queries:
+			output_format = queries['format']
 
 	if show_header:
 		if output_format == "json":
@@ -58,15 +61,13 @@ if __name__ == '__main__':
 
 	try:
 		ip_info = query_database(ip_address)
+		if output_format == "json":
+			print(ip_info.to_json())
+		elif output_format == "plain":
+			print(ip_info.to_string())
+		else:
+			raise Exception("Invalid output format.")
 	except Exception as e:
 		print(str(e))
-		sys.exit(1)
-
-	if output_format == "json":
-		print(ip_info.to_json())
-	elif output_format == "plain":
-		print(ip_info.to_string())
-	else:
-		print("Invalid output format.")
 		sys.exit(1)
 
