@@ -42,8 +42,8 @@ def netmask_to_ip_range(netmask_cidr):
 def ip_to_integer(ip_address):
 
 	"""
-	Converts an IP address to its representation as an integer value\
-	and returns a tuple (ip_integer, iversion), with version being
+	Converts an IP address to its representation as an integer value
+	and returns a tuple (ip_integer, version), with version being
 	either 4 or 6.
 
 	Both IPv4 addresses (e.g. "192.168.1.1") and IPv6 addresses
