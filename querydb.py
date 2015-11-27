@@ -90,11 +90,12 @@ class IPInfo:
 		return json.dumps(result, indent=2)
 
 
-##
-# @brief returns all available geolocation data for a given IP address as an
-#        IPInfo object
-#
 def query_database(ip_address):
+
+	"""
+	Returns geolocation data for an IP address (represented as a string
+	such as "1.2.3.4") as an IPInfo object.
+	"""
 
 	# convert the IP address into an integer and get its version
 	try:
