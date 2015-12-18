@@ -26,14 +26,9 @@ def get_queries():
 
 if __name__ == '__main__':
 
-	# the Content-type header will only be shown if this script is
-	# executed on a web server, i.e., it will not be displayed on
-	# a terminal (unless you define an environment variable called
-	# "REMOTE_ADDR")
-	show_header = False
-
 	# this part only applies if the script is executed on a web server
 	if "REMOTE_ADDR" in os.environ.keys():
+
 		show_header = True
 		queries = get_queries()
 
@@ -47,6 +42,8 @@ if __name__ == '__main__':
 		else:
 			output_format = "json"
 	else:
+		show_header = False
+
 		parser = argparse.ArgumentParser()
 		parser.add_argument('-f', '--output-format', type=str, default="json",
 				    help='specify the output format (default: json)')
@@ -57,6 +54,10 @@ if __name__ == '__main__':
 		output_format = namespace.output_format
 		ip_address = namespace.ip_address
 
+	# the Content-type header will only be shown if this script is
+	# executed on a web server, i.e., it will not be displayed on
+	# a terminal (unless you define an environment variable called
+	# "REMOTE_ADDR")
 	if show_header:
 		if output_format == "json":
 			print("Content-type: application/json; charset= utf-8\n")
