@@ -26,16 +26,6 @@ def get_queries():
 
 if __name__ == '__main__':
 
-	parser = argparse.ArgumentParser()
-	parser.add_argument('-f', '--output-format', type=str, default="json",
-	                    help='specify the output format (default: json)')
-	parser.add_argument('-i', '--ip-address', type=str, default=None,
-	                    help='IP address')
-	namespace = parser.parse_args()
-
-	output_format = namespace.output_format
-	ip_address = namespace.ip_address
-
 	# the Content-type header will only be shown if this script is
 	# executed on a web server, i.e., it will not be displayed on
 	# a terminal (unless you define an environment variable called
@@ -46,12 +36,26 @@ if __name__ == '__main__':
 	if "REMOTE_ADDR" in os.environ.keys():
 		show_header = True
 		queries = get_queries()
+
 		if 'q' in queries:
 			ip_address = queries['q']
 		else:
 			ip_address = os.environ["REMOTE_ADDR"]
+
 		if 'format' in queries:
 			output_format = queries['format']
+		else:
+			output_format = "json"
+	else:
+		parser = argparse.ArgumentParser()
+		parser.add_argument('-f', '--output-format', type=str, default="json",
+				    help='specify the output format (default: json)')
+		parser.add_argument('-i', '--ip-address', type=str, required=True,
+				    help='IP address')
+		namespace = parser.parse_args()
+
+		output_format = namespace.output_format
+		ip_address = namespace.ip_address
 
 	if show_header:
 		if output_format == "json":
