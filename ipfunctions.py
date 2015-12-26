@@ -11,7 +11,7 @@ def netmask_to_ip_range(netmask_cidr):
 	"""
 	Returns a tuple (ip_lower, ip_upper) containing the integer
 	representation of the lower and upper IP address values in the
-        range specified by a given netmask string in CIDR notation.
+	range specified by a given netmask string in CIDR notation.
 
 	Both IPv4 netmasks (e.g. "192.168.1.1/24") and IPv6 netmasks
 	(e.g. "2a02:a448:ddb0::/44") are accepted.
