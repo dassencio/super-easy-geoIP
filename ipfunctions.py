@@ -46,9 +46,9 @@ def subnetwork_to_ip_range(subnetwork_cidr):
 def ip_to_integer(ip_address):
 
 	"""
-	Converts an IP address to its representation as an integer value
-	and returns a tuple (ip_integer, version), with version being
-	either 4 or 6.
+	Converts an IP address expressed as a string to its representation
+	as an integer value and returns a tuple (ip_integer, version), with
+	version being either 4 or 6.
 
 	Both IPv4 addresses (e.g. "192.168.1.1") and IPv6 addresses
 	(e.g. "2a02:a448:ddb0::") are accepted.
