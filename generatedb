@@ -102,7 +102,7 @@ def segment_database(filename, dbtype):
 			# netmask and the second is its associated geoname ID
 			if dbtype != Database.Location:
 
-				(ip_lower,ip_upper) = netmask_to_ip_range(row[0])
+				(ip_lower,ip_upper) = subnetwork_to_ip_range(row[0])
 				geoname_id = row[1]
 
 				# ignore incomplete rows (no geoname ID)
