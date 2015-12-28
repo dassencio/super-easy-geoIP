@@ -13,7 +13,7 @@ def subnetwork_to_ip_range(subnetwork_cidr):
 	of the lower and upper IP addresses respectively in a subnetwork
 	expressed in CIDR notation (as a string).
 
-	Both IPv4 subnetworks (e.g. "192.168.1.1/24") and IPv6 subnetworks
+	Both IPv4 subnetworks (e.g. "192.168.1.0/24") and IPv6 subnetworks
 	(e.g. "2a02:a448:ddb0::/44") are accepted.
 	"""
 
