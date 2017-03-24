@@ -1,16 +1,20 @@
+[![Build Status](https://travis-ci.org/dassencio/easy-geoip.svg?branch=master)](https://travis-ci.org/dassencio/easy-geoip)
+
+
 Description
 ===========
 
-easy-geoip is an easy-to-install and easy-to-use IP geolocation engine. It
-can be used either as server or as a stand-alone command-line tool. If you want
-to get an IP geolocation server running in a matter of seconds, you are at the
-right place!
+Easy-geoip is an easy-to-install and easy-to-use IP geolocation engine (written
+in Python). It can be used either as server or as a stand-alone command-line
+tool. If you want to get an IP geolocation server running in a matter of seconds,
+you are at the right place!
 
 
 License
 =======
 
-All code from this project is licensed under the GPLv3. See 'LICENSE' for more.
+All code from this project is licensed under the GPLv3. See the `LICENSE` file
+for more information.
 
 
 Installation instructions
@@ -27,12 +31,12 @@ clone this repository with the following command:
 	git clone https://github.com/dassencio/easy-geoip.git .
 
 The only thing left to do is generating the IP geolocation database. For that,
-just run the following command:
+simply run the following command:
 
-	./generatedb
+	./generate-db
 
 This script will automatically download, extract and segment the GeoLite2
-database from MaxMind (available at http://dev.maxmind.com/geoip/geoip2/geolite2/).
+database from [MaxMind](http://dev.maxmind.com/geoip/geoip2/geolite2/).
 Running this script again will remove the currently existing database and
 generate a fresh one; I recommend you do this at least once every month (or every
 few months) to make sure the geolocation data remains accurate as it changes
@@ -40,7 +44,7 @@ over time.
 
 If you use Apache as a web server, easy-geoip should already be working.
 Try opening the root page where you are hosting easy-geoip (e.g.
-``http://mygeoip.org``); if everything is working, you will see the
+`http://mygeoip.org`); if everything is working, you will see the
 geolocation data for you own IP address. This is the type of output you
 should see:
 
@@ -68,9 +72,9 @@ should see:
 	  "metro_code": "807"
 	}
 
-To select an IP address other than yours, just specify it directly on the
-URL through a query string using the format ``http://mygeoip.org/?q=<IP>``.
-For example, to get the geolocation data for IP ``1.2.3.4``, open this URL:
+To select an IP address other than yours, specify it directly on the
+URL through a query string using the format `http://mygeoip.org/?q=<IP>`.
+For example, to get the geolocation data for IP `1.2.3.4`, open this URL:
 
 	http://mygeoip.org/?q=1.2.3.4
 
@@ -84,15 +88,15 @@ Using easy-geoip as a stand-alone command-line tool
 ==================================================
 
 You don't need to use easy-geoip as a server. After you generate the database,
-you can get IP geolocation data directly on your terminal. For that, just run
-``easy-geoip.py`` as in the example below:
+you can get IP geolocation data directly on your terminal. For that, run
+the `easy-geoip` script as in the example below:
 
-	./easy-geoip.py -i 8.8.8.8
+	./easy-geoip -i 8.8.8.8
 
 You can specify the output format too. For instance, to output plain text
 instead of JSON, run:
 
-	./easy-geoip.py -f plain -i 8.8.8.8
+	./easy-geoip -f plain -i 8.8.8.8
 
 
 Contributors & contact information

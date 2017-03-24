@@ -1,0 +1,24 @@
+language: python
+
+python:
+  - "2.6"
+  - "2.7"
+
+dist: trusty
+
+git:
+  depth: 3
+
+install:
+  - python --version
+
+script:
+  - ./generate-db
+  - ./run-tests
+
+notifications:
+  email:
+    recipients:
+      - diego@assencio.com
+    on_success: change
+    on_failure: always

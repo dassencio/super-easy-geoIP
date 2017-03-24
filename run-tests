@@ -1,0 +1,74 @@
+#!/bin/bash
+
+################################################################################
+#
+#	Test: invalid IP address as input (plain and JSON output formats)
+#
+################################################################################
+
+RESULT_JSON="$(cat <<EOF
+{
+  "error": "invalid IP address (INVALID-IP)"
+}
+EOF
+)"
+
+RESULT_PLAIN="invalid IP address (INVALID-IP)"
+
+diff -w <(./easy-geoip -i INVALID-IP) <(echo "$RESULT_JSON") || exit 1
+diff -w <(./easy-geoip -i INVALID-IP -f json) <(echo "$RESULT_JSON") || exit 1
+diff -w <(./easy-geoip -i INVALID-IP -f plain) <(echo "$RESULT_PLAIN") || exit 1
+
+echo "Passed test: invalid input IP address"
+
+################################################################################
+#
+#	Test: IP address 8.8.8.8 as input (plain and JSON output formats)
+#
+################################################################################
+
+RESULT_JSON="$(cat <<EOF
+{
+  "subdivision1": {
+    "code": "CA",
+    "name": "California"
+  },
+  "locale_code": "en",
+  "time_zone": "America/Los_Angeles",
+  "subdivision2": {
+    "code": "Unknown",
+    "name": "Unknown"
+  },
+  "city": "Mountain View",
+  "country": {
+    "code": "US",
+    "name": "United States"
+  },
+  "ip_address": "8.8.8.8",
+  "continent": {
+    "code": "NA",
+    "name": "North America"
+  },
+  "metro_code": "807"
+}
+EOF
+)"
+
+RESULT_PLAIN="$(cat <<EOF
+IP address: 8.8.8.8
+Locale code: en
+Continent: North America (NA)
+Country: United States (US)
+Subdivision 1: California (CA)
+Subdivision 2: Unknown (Unknown)
+City: Mountain View
+Metro code: 807
+Time zone: America/Los_Angeles
+EOF
+)"
+
+diff -w <(./easy-geoip -i 8.8.8.8) <(echo "$RESULT_JSON") || exit 1
+diff -w <(./easy-geoip -i 8.8.8.8 -f json) <(echo "$RESULT_JSON") || exit 1
+diff -w <(./easy-geoip -i 8.8.8.8 -f plain) <(echo "$RESULT_PLAIN") || exit 1
+
+echo "Passed test: input IP address 8.8.8.8"
