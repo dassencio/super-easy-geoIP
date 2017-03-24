@@ -73,6 +73,10 @@ if __name__ == '__main__':
 		else:
 			raise Exception("invalid output format (%s)" % output_format)
 	except Exception as e:
-		print(str(e))
+		if output_format == "json":
+			import json
+			print(json.dumps({"error": str(e)}, indent=2))
+		else:
+			print(str(e))
 		sys.exit(1)
 
