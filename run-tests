@@ -6,18 +6,18 @@
 #
 ################################################################################
 
-RESULT_JSON="$(cat <<EOF
+result_json="$(cat <<EOF
 {
   "error": "invalid IP address (INVALID-IP)"
 }
 EOF
 )"
 
-RESULT_PLAIN="invalid IP address (INVALID-IP)"
+result_plain="invalid IP address (INVALID-IP)"
 
-diff -w <(./easy-geoip -i INVALID-IP) <(echo "$RESULT_JSON") || exit 1
-diff -w <(./easy-geoip -i INVALID-IP -f json) <(echo "$RESULT_JSON") || exit 1
-diff -w <(./easy-geoip -i INVALID-IP -f plain) <(echo "$RESULT_PLAIN") || exit 1
+diff -w <(./easy-geoip -i INVALID-IP) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i INVALID-IP -f json) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i INVALID-IP -f plain) <(echo "$result_plain") || exit 1
 
 echo "Passed test: invalid input IP address"
 
@@ -27,7 +27,7 @@ echo "Passed test: invalid input IP address"
 #
 ################################################################################
 
-RESULT_JSON="$(cat <<EOF
+result_json="$(cat <<EOF
 {
   "subdivision1": {
     "code": "CA",
@@ -54,7 +54,7 @@ RESULT_JSON="$(cat <<EOF
 EOF
 )"
 
-RESULT_PLAIN="$(cat <<EOF
+result_plain="$(cat <<EOF
 IP address: 8.8.8.8
 Locale code: en
 Continent: North America (NA)
@@ -67,8 +67,8 @@ Time zone: America/Los_Angeles
 EOF
 )"
 
-diff -w <(./easy-geoip -i 8.8.8.8) <(echo "$RESULT_JSON") || exit 1
-diff -w <(./easy-geoip -i 8.8.8.8 -f json) <(echo "$RESULT_JSON") || exit 1
-diff -w <(./easy-geoip -i 8.8.8.8 -f plain) <(echo "$RESULT_PLAIN") || exit 1
+diff -w <(./easy-geoip -i 8.8.8.8) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 8.8.8.8 -f json) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 8.8.8.8 -f plain) <(echo "$result_plain") || exit 1
 
 echo "Passed test: input IP address 8.8.8.8"
