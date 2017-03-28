@@ -9,9 +9,6 @@ dist: trusty
 git:
   depth: 3
 
-install:
-  - python --version
-
 script:
   - ./generate-db
   - ./run-tests
