@@ -13,7 +13,8 @@ you are at the right place!
 License
 =======
 
-All code from this project is licensed under the GPLv3. See the `LICENSE` file
+All code from this project is licensed under the GPLv3. See the
+[`LICENSE`](https://github.com/dassencio/easy-geoip/tree/master/LICENSE) file
 for more information.
 
 
