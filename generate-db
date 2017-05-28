@@ -10,6 +10,7 @@ import zipfile
 from config import *
 from ipfunctions import *
 
+################################################################################
 
 # a database "enumeration" class
 class Database:
@@ -17,6 +18,7 @@ class Database:
 	GeonameID6 = 1
 	Location = 2
 
+################################################################################
 
 def reset_database():
 
@@ -28,6 +30,7 @@ def reset_database():
 
 	os.makedirs("database/")
 
+################################################################################
 
 def download_file(url):
 
@@ -41,6 +44,7 @@ def download_file(url):
 
 	urllib.request.urlretrieve(url, filename)
 
+################################################################################
 
 def extract_zip(zipfilename):
 
@@ -63,6 +67,7 @@ def extract_zip(zipfilename):
 
 		ziphandle.close()
 
+################################################################################
 
 def segment_database(filename, dbtype):
 
@@ -144,6 +149,7 @@ def segment_database(filename, dbtype):
 		index_file.close()
 		csvfile.close()
 
+################################################################################
 
 def remove_temporary_files():
 
@@ -159,6 +165,7 @@ def remove_temporary_files():
 				print("  Removing %s" % filename)
 				os.remove(os.path.join(root, filename))
 
+################################################################################
 
 def generate_database():
 
@@ -187,8 +194,7 @@ def generate_database():
 
 	print("Done!")
 
+################################################################################
 
 if __name__ == '__main__':
 	generate_database()
-
-

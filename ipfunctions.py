@@ -3,6 +3,7 @@
 import socket
 import binascii
 
+################################################################################
 
 def subnetwork_to_ip_range(subnetwork_cidr):
 
@@ -40,6 +41,7 @@ def subnetwork_to_ip_range(subnetwork_cidr):
 
 	raise ValueError("invalid subnetwork")
 
+################################################################################
 
 def ip_to_integer(ip_address):
 
