@@ -9,10 +9,13 @@ from config import *
 from ipfunctions import *
 
 
-# class which holds geolocation data for an IP address
 class IPInfo:
 
+	"""Holds geolocation data for an IP address."""
+
 	def __init__(self, ip_address):
+
+		"""Initializes an IPInfo object with an IP address."""
 
 		(self.ip_address,
 		 self.geoid,
@@ -31,6 +34,8 @@ class IPInfo:
 
 	def set_values(self, row):
 
+		"""Extracts geolocation data for an IP address from an array."""
+
 		(self.geoid,
 		 self.locale_code,
 		 self.continent_code,
@@ -45,8 +50,9 @@ class IPInfo:
 		 self.metro_code,
 		 self.time_zone) = ["Unknown" if field == "" else field for field in row]
 
-	# returns all geolocation data as a multi-line string
 	def to_string(self):
+
+		"""Returns all geolocation data as a multi-line string."""
 
 		result  = "IP address: %s\n" % self.ip_address
 		result += "Locale code: %s\n" % self.locale_code
@@ -60,8 +66,9 @@ class IPInfo:
 
 		return result
 
-	# returns all geolocation data as a JSON string
 	def to_json(self):
+
+		"""Returns all geolocation data as a JSON string."""
 
 		result = {
 			"ip_address": self.ip_address,
