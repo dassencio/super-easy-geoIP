@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
-
+import ipfunctions
 import json
 import pickle
 
-from config import *
-from ipfunctions import *
-
+################################################################################
 
 class IPInfo:
 
@@ -96,6 +93,7 @@ class IPInfo:
 
 		return json.dumps(result, indent=2, sort_keys=True)
 
+################################################################################
 
 def query_database(ip_address):
 
@@ -106,7 +104,7 @@ def query_database(ip_address):
 
 	# convert the IP address into an integer and get its version
 	try:
-		(ip_integer,version) = ip_to_integer(ip_address)
+		(ip_integer,version) = ipfunctions.ip_to_integer(ip_address)
 	except:
 		raise ValueError("invalid IP address (%s)" % ip_address)
 

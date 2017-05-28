@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import cgi
 import argparse
-
-from querydb import *
+import cgi
+import os
+import querydb
+import sys
 
 ################################################################################
 
@@ -65,7 +64,7 @@ if __name__ == '__main__':
 			print("Content-type: text/plain; charset= utf-8\n")
 
 	try:
-		ip_info = query_database(ip_address)
+		ip_info = querydb.query_database(ip_address)
 		if output_format == "json":
 			print(ip_info.to_json())
 		elif output_format == "plain":

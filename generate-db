@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
+import config
 import csv
+import ipfunctions
 import os
 import pickle
 import shutil
 import urllib.request
 import zipfile
-from config import *
-from ipfunctions import *
 
 ################################################################################
 
@@ -92,7 +92,7 @@ def segment_database(filename, dbtype):
 
 		row_num = 0
 		segment_num = 0
-		block = (ip4_block, ip6_block, geoid_block)[dbtype]
+		block = (config.ip4_block, config.ip6_block, config.geoid_block)[dbtype]
 
 		# create/open the first database segment file
 		segment_file = open("database/%s-%d" % (prefix, segment_num), 'wb')
@@ -104,7 +104,7 @@ def segment_database(filename, dbtype):
 			# netmask and the second is its associated geoname ID
 			if dbtype != Database.Location:
 
-				(ip_lower,ip_upper) = subnetwork_to_ip_range(row[0])
+				(ip_lower,ip_upper) = ipfunctions.subnetwork_to_ip_range(row[0])
 				geoname_id = row[1]
 
 				# ignore incomplete rows (no geoname ID)
