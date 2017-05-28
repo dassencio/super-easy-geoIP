@@ -5,7 +5,7 @@ Description
 ===========
 
 Easy-geoip is an easy-to-install and easy-to-use IP geolocation engine (written
-in Python). It can be used either as server or as a stand-alone command-line
+in Python 3). It can be used either as server or as a stand-alone command-line
 tool. If you want to get an IP geolocation server running in a matter of seconds,
 you are at the right place!
 
