@@ -29,27 +29,27 @@ echo "Passed test: invalid input IP address"
 
 result_json="$(cat <<EOF
 {
-  "subdivision1": {
-    "code": "CA",
-    "name": "California"
-  },
-  "locale_code": "en",
-  "time_zone": "America/Los_Angeles",
-  "subdivision2": {
-    "code": "Unknown",
-    "name": "Unknown"
-  },
   "city": "Mountain View",
+  "continent": {
+    "code": "NA",
+    "name": "North America"
+  },
   "country": {
     "code": "US",
     "name": "United States"
   },
   "ip_address": "8.8.8.8",
-  "continent": {
-    "code": "NA",
-    "name": "North America"
+  "locale_code": "en",
+  "metro_code": "807",
+  "subdivision1": {
+    "code": "CA",
+    "name": "California"
   },
-  "metro_code": "807"
+  "subdivision2": {
+    "code": "Unknown",
+    "name": "Unknown"
+  },
+  "time_zone": "America/Los_Angeles"
 }
 EOF
 )"
