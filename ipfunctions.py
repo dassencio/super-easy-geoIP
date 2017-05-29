@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Functions for handling IP addresses and subnetworks in CIDR notation."""
+
 import binascii
 import socket
 

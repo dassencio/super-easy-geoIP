@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+"""Tools for querying a generated IP geolocation database."""
+
 import ipfunctions
 import json
 import pickle
