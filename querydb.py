@@ -4,7 +4,6 @@ import ipfunctions
 import json
 import pickle
 
-################################################################################
 
 class IPInfo:
 
@@ -93,7 +92,6 @@ class IPInfo:
 
 		return json.dumps(result, indent=2, sort_keys=True)
 
-################################################################################
 
 def query_database(ip_address):
 
