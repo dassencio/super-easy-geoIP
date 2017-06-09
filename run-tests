@@ -23,13 +23,13 @@ echo "Passed test: invalid input IP address"
 
 ################################################################################
 #
-#	Test: IP address 8.8.8.8 as input (plain and JSON output formats)
+#	Test: valid IP address as input (plain and JSON output formats)
 #
 ################################################################################
 
 result_json="$(cat <<EOF
 {
-  "city": "Mountain View",
+  "city": "Mukilteo",
   "continent": {
     "code": "NA",
     "name": "North America"
@@ -38,12 +38,12 @@ result_json="$(cat <<EOF
     "code": "US",
     "name": "United States"
   },
-  "ip_address": "8.8.8.8",
+  "ip_address": "1.2.3.4",
   "locale_code": "en",
-  "metro_code": "807",
+  "metro_code": "819",
   "subdivision1": {
-    "code": "CA",
-    "name": "California"
+    "code": "WA",
+    "name": "Washington"
   },
   "subdivision2": {
     "code": "Unknown",
@@ -55,20 +55,20 @@ EOF
 )"
 
 result_plain="$(cat <<EOF
-IP address: 8.8.8.8
+IP address: 1.2.3.4
 Locale code: en
 Continent: North America (NA)
 Country: United States (US)
-Subdivision 1: California (CA)
+Subdivision 1: Washington (WA)
 Subdivision 2: Unknown (Unknown)
-City: Mountain View
-Metro code: 807
+City: Mukilteo
+Metro code: 819
 Time zone: America/Los_Angeles
 EOF
 )"
 
-diff -w <(./easy-geoip -i 8.8.8.8) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 8.8.8.8 -f json) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 8.8.8.8 -f plain) <(echo "$result_plain") || exit 1
+diff -w <(./easy-geoip -i 1.2.3.4) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 1.2.3.4 -f json) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 1.2.3.4 -f plain) <(echo "$result_plain") || exit 1
 
-echo "Passed test: input IP address 8.8.8.8"
+echo "Passed test: input IP address 1.2.3.4"
