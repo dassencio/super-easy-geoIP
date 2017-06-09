@@ -1,9 +1,7 @@
-################################################################################
 #
 #  IMPORTANT: regenerate the database if you change the numbers below,
 #             otherwise the querying script will stop working properly!
 #
-################################################################################
 
 #
 # Sizes of IPv4/6 netmask blocks. Decreasing these numbers will increase the

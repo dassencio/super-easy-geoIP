@@ -12,182 +12,179 @@ import zipfile
 
 class Database:
 
-	"""An "enumeration" class specifying database types."""
+    """An "enumeration" class specifying database types."""
 
-	GeonameID4 = 0
-	GeonameID6 = 1
-	Location = 2
+    GeonameID4 = 0
+    GeonameID6 = 1
+    Location = 2
 
 
 def reset_database():
+    """Removes the current database and recreates its directory."""
 
-	"""Removes the current database and recreates its directory."""
+    if os.path.exists("database/"):
+        print("Removing existing database")
+        shutil.rmtree("database/", ignore_errors=True)
 
-	if os.path.exists("database/"):
-		print("Removing existing database")
-		shutil.rmtree('database/', ignore_errors=True)
-
-	os.makedirs("database/")
+    os.makedirs("database/")
 
 
 def download_file(url):
+    """
+    Downloads a file pointed to by an URL and stores it on the current
+    directory (with the same name as specified in the URL).
+    """
 
-	"""
-	Downloads a file pointed to by an URL and stores it on the current
-	directory (with the same name as specified in the URL).
-	"""
+    filename = url.split("/")[-1]
+    print("Downloading %s" % filename)
 
-	filename = url.split('/')[-1]
-	print("Downloading %s" % filename)
-
-	urllib.request.urlretrieve(url, filename)
+    urllib.request.urlretrieve(url, filename)
 
 
 def extract_zip(zipfilename):
+    """
+    Extracts all the files in a ZIP file and places them on the working
+    directory (the internal directory hierarchy of the ZIP file is
+    ignored).
+    """
 
-	"""
-	Extracts all the files in a ZIP file and places them on the working
-	directory (the internal directory hierarchy of the ZIP file is
-	ignored).
-	"""
+    print("Decompressing %s" % zipfilename)
+    with open(zipfilename, "rb") as ziphandle:
 
-	print("Decompressing %s" % zipfilename)
-	with open(zipfilename, 'rb') as ziphandle:
+        contents = zipfile.ZipFile(ziphandle)
 
-		contents = zipfile.ZipFile(ziphandle)
+        for filename in contents.namelist():
+            print("  Extracting %s" % filename)
+            output = open(filename.split("/")[-1], "wb")
+            output.write(contents.read(filename))
+            output.close()
 
-		for filename in contents.namelist():
-			print("  Extracting %s" % filename)
-			output = open(filename.split("/")[-1], 'wb')
-			output.write(contents.read(filename))
-			output.close()
-
-		ziphandle.close()
+        ziphandle.close()
 
 
 def segment_database(filename, dbtype):
+    """
+    Segments a database stored on a CSV file into small binary files;
+    dbtype specifies the database type (one of the types in the Database
+    class).
+    """
 
-	"""
-	Segments a database stored on a CSV file into small binary files;
-	dbtype specifies the database type (one of the types in the Database
-	class).
-	"""
+    print("Breaking %s into small binary chunks" % filename)
 
-	print("Breaking %s into small binary chunks" % filename)
+    with open(filename, "r") as csvfile:
 
-	with open(filename, 'r') as csvfile:
+        prefix = ("geoid-ip4", "geoid-ip6", "location")[dbtype]
 
-		prefix = ("geoid-ip4", "geoid-ip6", "location")[dbtype]
+        # build a database index too (target value -> segment number)
+        index_filename = "database/index-%s" % prefix
+        index_file = open(index_filename, "wb")
 
-		# build a database index too (target value -> segment number)
-		index_filename = "database/index-%s" % prefix
-		index_file = open(index_filename, 'wb')
+        # open the database reader and skip the header row
+        database = csv.reader(csvfile)
+        next(database)
 
-		# open the database reader and skip the header row
-		database = csv.reader(csvfile)
-		next(database)
+        row_num = 0
+        segment_num = 0
+        block = (config.ip4_block,
+                 config.ip6_block,
+                 config.geoid_block)[dbtype]
 
-		row_num = 0
-		segment_num = 0
-		block = (config.ip4_block, config.ip6_block, config.geoid_block)[dbtype]
+        # create/open the first database segment file
+        segment_file = open("database/%s-%d" % (prefix, segment_num), "wb")
 
-		# create/open the first database segment file
-		segment_file = open("database/%s-%d" % (prefix, segment_num), 'wb')
+        index_lower = 0
+        for row in database:
 
-		index_lower = 0
-		for row in database:
+            # for geoname ID databases, the first column is the
+            # netmask and the second is its associated geoname ID
+            if dbtype != Database.Location:
 
-			# for geoname ID databases, the first column is the
-			# netmask and the second is its associated geoname ID
-			if dbtype != Database.Location:
+                (ip_lower, ip_upper) = ipfunctions.subnetwork_to_ip_range(
+                    row[0])
+                geoname_id = row[1]
 
-				(ip_lower,ip_upper) = ipfunctions.subnetwork_to_ip_range(row[0])
-				geoname_id = row[1]
+                # ignore incomplete rows (no geoname ID)
+                if geoname_id == "":
+                    continue
 
-				# ignore incomplete rows (no geoname ID)
-				if geoname_id == "":
-					continue
+                segment_object = [ip_lower, ip_upper, int(geoname_id)]
+                index_upper = ip_upper
 
-				segment_object = [ip_lower, ip_upper, int(geoname_id)]
-				index_upper = ip_upper
+            # for location databases, the first row contains the
+            # geoname ID and the rest is geolocation data
+            else:
+                geoname_id = int(row[0])
+                segment_object = [geoname_id] + row[1:]
+                index_upper = geoname_id
 
-			# for location databases, the first row contains the
-			# geoname ID and the rest is geolocation data
-			else:
-				geoname_id = int(row[0])
-				segment_object = [geoname_id] + row[1:]
-				index_upper = geoname_id
+            pickle.dump(segment_object, segment_file)
 
-			pickle.dump(segment_object, segment_file)
+            row_num += 1
 
-			row_num += 1
+            # if it is time to start a new segment file
+            if row_num % block == 0:
 
-			# if it is time to start a new segment file
-			if row_num % block == 0:
+                pickle.dump((index_lower, index_upper), index_file)
+                index_lower = index_upper + 1
+                segment_file.close()
+                segment_num += 1
 
-				pickle.dump((index_lower, index_upper), index_file)
-				index_lower = index_upper + 1
-				segment_file.close()
-				segment_num += 1
+                # create/open the next database segment file
+                segment_file = open("database/%s-%d" % (prefix,
+                                    segment_num), "wb")
 
-				# create/open the next database segment file
-				segment_file = open("database/%s-%d" % (prefix,
-				                    segment_num), 'wb')
+        # if necessary, dump trailing index data
+        if row_num % block != 0:
+            pickle.dump((index_lower, index_upper), index_file)
 
-		# if necessary, dump trailing index data
-		if row_num % block != 0:
-			pickle.dump((index_lower, index_upper), index_file)
+        print("  Number of segments created: %d" % (segment_num + 1))
+        print("  Number of entries per segment: %d" % block)
 
-		print("  Number of segments created: %d" % (segment_num+1))
-		print("  Number of entries per segment: %d" % block)
-
-		segment_file.close()
-		index_file.close()
-		csvfile.close()
+        segment_file.close()
+        index_file.close()
+        csvfile.close()
 
 
 def remove_temporary_files():
+    """Removes all generated temporary files."""
 
-	"""Removes all generated temporary files."""
+    print("Removing temporary files")
 
-	print("Removing temporary files")
+    for root, dirs, files in os.walk("./"):
+        for filename in files:
 
-	for root, dirs, files in os.walk("./"):
-		for filename in files:
-
-			exts = ('.csv', '.zip', '.txt')
-			if any(filename.lower().endswith(ext) for ext in exts):
-				print("  Removing %s" % filename)
-				os.remove(os.path.join(root, filename))
+            exts = (".csv", ".zip", ".txt")
+            if any(filename.lower().endswith(ext) for ext in exts):
+                print("  Removing %s" % filename)
+                os.remove(os.path.join(root, filename))
 
 
 def generate_database():
+    """Generates the geolocation database."""
 
-	"""Generates the geolocation database."""
+    reset_database()
 
-	reset_database()
+    base_url = "http://geolite.maxmind.com/download/geoip/database/"
+    download_file(base_url + "GeoLite2-City-CSV.zip")
 
-	base_url = "http://geolite.maxmind.com/download/geoip/database/"
-	download_file(base_url + "GeoLite2-City-CSV.zip")
+    extract_zip("GeoLite2-City-CSV.zip")
 
-	extract_zip("GeoLite2-City-CSV.zip")
+    # break the geoname ID database into smaller segments
+    # segment scheme: [lower IP, upper IP, gename ID]
+    segment_database("GeoLite2-City-Blocks-IPv4.csv", Database.GeonameID4)
+    segment_database("GeoLite2-City-Blocks-IPv6.csv", Database.GeonameID6)
 
-	# break the geoname ID database into smaller segments
-	# segment scheme: [lower IP, upper IP, gename ID]
-	segment_database("GeoLite2-City-Blocks-IPv4.csv", Database.GeonameID4)
-	segment_database("GeoLite2-City-Blocks-IPv6.csv", Database.GeonameID6)
+    # break the city database into smaller segments
+    # scheme: [geoname ID, locale code, continent code, continent name,
+    #          country ISO code, country ISO name, subdivision 1 ISO code,
+    #          subdivision 1 name, subdivision 2 ISO code, subdivision 2
+    #          name, city name, metro code, time zone]
+    segment_database("GeoLite2-City-Locations-en.csv", Database.Location)
 
-	# break the city database into smaller segments
-	# scheme: [geoname ID, locale code, continent code, continent name,
-	#          country ISO code, country ISO name, subdivision 1 ISO code,
-	#          subdivision 1 name, subdivision 2 ISO code, subdivision 2
-	#          name, city name, metro code, time zone]
-	segment_database("GeoLite2-City-Locations-en.csv", Database.Location)
+    remove_temporary_files()
 
-	remove_temporary_files()
-
-	print("Done!")
+    print("Done!")
 
 
-if __name__ == '__main__':
-	generate_database()
+if __name__ == "__main__":
+    generate_database()
