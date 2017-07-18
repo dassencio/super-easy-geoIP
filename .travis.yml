@@ -1,12 +1,19 @@
-language: generic
+language: python
 
 dist: trusty
+
+python:
+  - 3.2
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
+  - nightly
 
 git:
   depth: 3
 
 script:
-  - python3 --version
   - ./generate-db
   - ./run-tests
 
