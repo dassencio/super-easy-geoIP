@@ -39,6 +39,7 @@ result_json="$(cat <<EOF
     "name": "United States"
   },
   "ip_address": "1.2.3.4",
+  "is_in_european_union": "0",
   "locale_code": "en",
   "metro_code": "819",
   "subdivision1": {
@@ -64,6 +65,7 @@ Subdivision 2: Unknown (Unknown)
 City: Mukilteo
 Metro code: 819
 Time zone: America/Los_Angeles
+Is in European Union: 0
 EOF
 )"
 

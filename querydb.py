@@ -27,7 +27,8 @@ class IPInfo:
          self.subdiv2_name,
          self.city_name,
          self.metro_code,
-         self.time_zone) = [ip_address, None] + (["Unknown"] * 12)
+         self.time_zone,
+         self.is_in_european_union) = [ip_address, None] + (["Unknown"] * 13)
 
     def set_values(self, row):
         """Extracts geolocation data for an IP address from an array."""
@@ -44,7 +45,8 @@ class IPInfo:
          self.subdiv2_name,
          self.city_name,
          self.metro_code,
-         self.time_zone) = ["Unknown" if field == "" else field for field in row]
+         self.time_zone,
+         self.is_in_european_union) = ["Unknown" if field == "" else field for field in row]
 
     def to_string(self):
         """Returns all geolocation data as a multi-line string."""
@@ -61,7 +63,8 @@ class IPInfo:
             self.subdiv2_name, self.subdiv2_iso_code)
         result += "City: %s\n" % self.city_name
         result += "Metro code: %s\n" % self.metro_code
-        result += "Time zone: %s" % self.time_zone
+        result += "Time zone: %s\n" % self.time_zone
+        result += "Is in European Union: %s" % self.is_in_european_union
 
         return result
 
@@ -70,26 +73,27 @@ class IPInfo:
 
         result = {
             "ip_address": self.ip_address,
-                "locale_code": self.locale_code,
-                "continent": {
-                    "name": self.continent_name,
-                        "code": self.continent_code
-                },
-                "country": {
-                    "name": self.country_name,
-                        "code": self.country_iso_code
-                },
-                "subdivision1": {
-                    "name": self.subdiv1_name,
-                        "code": self.subdiv1_iso_code
-                },
-                "subdivision2": {
-                    "name": self.subdiv2_name,
-                        "code": self.subdiv2_iso_code
-                },
-                "city": self.city_name,
-                "metro_code": self.metro_code,
-                "time_zone": self.time_zone
+            "locale_code": self.locale_code,
+            "continent": {
+                "name": self.continent_name,
+                    "code": self.continent_code
+            },
+            "country": {
+                "name": self.country_name,
+                    "code": self.country_iso_code
+            },
+            "subdivision1": {
+                "name": self.subdiv1_name,
+                    "code": self.subdiv1_iso_code
+            },
+            "subdivision2": {
+                "name": self.subdiv2_name,
+                    "code": self.subdiv2_iso_code
+            },
+            "city": self.city_name,
+            "metro_code": self.metro_code,
+            "time_zone": self.time_zone,
+            "is_in_european_union": self.is_in_european_union
         }
 
         return json.dumps(result, indent=2, sort_keys=True)
