@@ -76,19 +76,19 @@ class IPInfo:
             "locale_code": self.locale_code,
             "continent": {
                 "name": self.continent_name,
-                    "code": self.continent_code
+                "code": self.continent_code
             },
             "country": {
                 "name": self.country_name,
-                    "code": self.country_iso_code
+                "code": self.country_iso_code
             },
             "subdivision1": {
                 "name": self.subdiv1_name,
-                    "code": self.subdiv1_iso_code
+                "code": self.subdiv1_iso_code
             },
             "subdivision2": {
                 "name": self.subdiv2_name,
-                    "code": self.subdiv2_iso_code
+                "code": self.subdiv2_iso_code
             },
             "city": self.city_name,
             "metro_code": self.metro_code,
