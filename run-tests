@@ -29,7 +29,7 @@ echo "Passed test: invalid input IP address"
 
 result_json="$(cat <<EOF
 {
-  "city": "Mukilteo",
+  "city": "Mountain View",
   "continent": {
     "code": "NA",
     "name": "North America"
@@ -38,13 +38,13 @@ result_json="$(cat <<EOF
     "code": "US",
     "name": "United States"
   },
-  "ip_address": "1.2.3.4",
+  "ip_address": "172.217.19.78",
   "is_in_european_union": "0",
   "locale_code": "en",
-  "metro_code": "819",
+  "metro_code": "807",
   "subdivision1": {
-    "code": "WA",
-    "name": "Washington"
+    "code": "CA",
+    "name": "California"
   },
   "subdivision2": {
     "code": "Unknown",
@@ -56,21 +56,21 @@ EOF
 )"
 
 result_plain="$(cat <<EOF
-IP address: 1.2.3.4
+IP address: 172.217.19.78
 Locale code: en
 Continent: North America (NA)
 Country: United States (US)
-Subdivision 1: Washington (WA)
+Subdivision 1: California (CA)
 Subdivision 2: Unknown (Unknown)
-City: Mukilteo
-Metro code: 819
+City: Mountain View
+Metro code: 807
 Time zone: America/Los_Angeles
 Is in European Union: 0
 EOF
 )"
 
-diff -w <(./easy-geoip -i 1.2.3.4) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 1.2.3.4 -f json) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 1.2.3.4 -f plain) <(echo "$result_plain") || exit 1
+diff -w <(./easy-geoip -i 172.217.19.78) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 172.217.19.78 -f json) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 172.217.19.78 -f plain) <(echo "$result_plain") || exit 1
 
-echo "Passed test: input IP address 1.2.3.4"
+echo "Passed test: input IP address 172.217.19.78"
