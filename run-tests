@@ -29,7 +29,7 @@ echo "Passed test: invalid input IP address"
 
 result_json="$(cat <<EOF
 {
-  "city": "Berlin",
+  "city": "Frankfurt am Main",
   "continent": {
     "code": "EU",
     "name": "Europe"
@@ -38,13 +38,13 @@ result_json="$(cat <<EOF
     "code": "DE",
     "name": "Germany"
   },
-  "ip_address": "160.45.170.10",
+  "ip_address": "52.29.203.14",
   "is_in_european_union": "1",
   "locale_code": "en",
   "metro_code": "Unknown",
   "subdivision1": {
-    "code": "BE",
-    "name": "Land Berlin"
+    "code": "HE",
+    "name": "Hesse"
   },
   "subdivision2": {
     "code": "Unknown",
@@ -56,21 +56,21 @@ EOF
 )"
 
 result_plain="$(cat <<EOF
-IP address: 160.45.170.10
+IP address: 52.29.203.14
 Locale code: en
 Continent: Europe (EU)
 Country: Germany (DE)
-Subdivision 1: Land Berlin (BE)
+Subdivision 1: Hesse (HE)
 Subdivision 2: Unknown (Unknown)
-City: Berlin
+City: Frankfurt am Main
 Metro code: Unknown
 Time zone: Europe/Berlin
 Is in European Union: 1
 EOF
 )"
 
-diff -w <(./easy-geoip -i 160.45.170.10) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 160.45.170.10 -f json) <(echo "$result_json") || exit 1
-diff -w <(./easy-geoip -i 160.45.170.10 -f plain) <(echo "$result_plain") || exit 1
+diff -w <(./easy-geoip -i 52.29.203.14) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 52.29.203.14 -f json) <(echo "$result_json") || exit 1
+diff -w <(./easy-geoip -i 52.29.203.14 -f plain) <(echo "$result_plain") || exit 1
 
-echo "Passed test: input IP address 160.45.170.10"
+echo "Passed test: input IP address 52.29.203.14"
