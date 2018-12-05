@@ -1,25 +1,19 @@
-[![Build Status](https://travis-ci.org/dassencio/easy-geoip.svg?branch=master)](https://travis-ci.org/dassencio/easy-geoip)
+[![Build Status](https://api.travis-ci.com/dassencio/easy-geoip.svg?branch=master)](https://travis-ci.com/dassencio/easy-geoip)
 
-
-Description
-===========
+# Description
 
 Easy-geoip is an easy-to-install and easy-to-use IP geolocation engine (written
 in Python 3). It can be used either as server or as a stand-alone command-line
 tool. If you want to get an IP geolocation server running in a matter of seconds,
 you are at the right place!
 
-
-License
-=======
+# License
 
 All code from this project is licensed under the GPLv3. See the
 [`LICENSE`](https://github.com/dassencio/easy-geoip/tree/master/LICENSE) file
 for more information.
 
-
-Installation instructions
-=========================
+# Installation instructions
 
 Installing easy-geoip is super easy. You can either do the steps below directly
 on the server on which easy-geoip will be hosted or locally on your machine.
@@ -74,7 +68,6 @@ should see:
       "time_zone": "Unknown"
     }
 
-
 To select an IP address other than yours, specify it directly on the
 URL through a query string using the format `http://mygeoip.org/?q=<IP>`.
 For example, to get the geolocation data for IP `1.2.3.4`, open this URL:
@@ -86,9 +79,7 @@ plain text format, specify it directly on the URL as in the example below:
 
     http://mygeoip.org/?q=1.2.3.4&format=plain
 
-
-Using easy-geoip as a stand-alone command-line tool
-==================================================
+# Using easy-geoip as a stand-alone command-line tool
 
 You don't need to use easy-geoip as a server. After you generate the database,
 you can get IP geolocation data directly on your terminal. For that, run
@@ -101,9 +92,6 @@ instead of JSON, run:
 
     ./easy-geoip -f plain -i 8.8.8.8
 
-
-Contributors & contact information
-==================================
+# Contributors & contact information
 
 Diego Assencio / diego@assencio.com
-
