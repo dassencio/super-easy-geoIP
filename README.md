@@ -7,6 +7,12 @@ in Python 3). It can be used either as server or as a stand-alone command-line
 tool. If you want to get an IP geolocation server running in a matter of seconds,
 you are at the right place!
 
+**NOTE**: Since 01/01/2020, easy-geoip requires a license key from MaxMind to
+work because MaxMind no longer provides IP geolocation databases publicly due to
+privacy regulations. Please
+[create an account](https://www.maxmind.com/en/geolite2/signup) on their website
+and generate a license key before following the installation steps below.
+
 # License
 
 All code from this project is licensed under the GPLv3. See the
@@ -28,14 +34,13 @@ clone this repository with the following command:
 The only thing left to do is generating the IP geolocation database. For that,
 simply run the following command:
 
-    ./generate-db
+    ./generate-db <maxmind-license-key>
 
-This script will automatically download, extract and segment the GeoLite2
-database from [MaxMind](http://dev.maxmind.com/geoip/geoip2/geolite2/).
-Running this script again will remove the currently existing database and
-generate a fresh one; I recommend you do this at least once every month (or every
-few months) to make sure the geolocation data remains accurate as it changes
-over time.
+This script will automatically download, extract and segment the GeoLite2 city
+database from MaxMind. Running this script again will remove the currently
+existing database and generate a fresh one; I recommend you do this at least
+once every month (or every few months) to make sure the geolocation data remains
+accurate as it changes over time.
 
 If you use Apache as a web server, easy-geoip should already be working.
 Try opening the root page where you are hosting easy-geoip (e.g.

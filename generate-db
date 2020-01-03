@@ -6,6 +6,7 @@ import ipfunctions
 import os
 import pickle
 import shutil
+import sys
 import urllib.request
 import zipfile
 
@@ -29,15 +30,13 @@ def reset_database():
     os.makedirs("database/")
 
 
-def download_file(url):
+def download_file(url, filename):
     """
     Downloads a file pointed to by an URL and stores it on the current
     directory (with the same name as specified in the URL).
     """
 
-    filename = url.split("/")[-1]
     print("Downloading %s" % filename)
-
     urllib.request.urlretrieve(url, filename)
 
 
@@ -159,14 +158,17 @@ def remove_temporary_files():
                 os.remove(os.path.join(root, filename))
 
 
-def generate_database():
+def generate_database(license_key):
     """Generates the geolocation database."""
 
     reset_database()
 
-    base_url = "http://geolite.maxmind.com/download/geoip/database/"
-    download_file(base_url + "GeoLite2-City-CSV.zip")
-
+    download_file(
+        "https://download.maxmind.com/app/geoip_download?"
+        "edition_id=GeoLite2-City-CSV&suffix=zip"
+        "&license_key=%s" % license_key,
+        "GeoLite2-City-CSV.zip"
+    )
     extract_zip("GeoLite2-City-CSV.zip")
 
     # break the geoname ID database into smaller segments
@@ -187,4 +189,8 @@ def generate_database():
 
 
 if __name__ == "__main__":
-    generate_database()
+    if len(sys.argv) < 2:
+        print("Usage: ./generate-db <maxmind-license-key>")
+        sys.exit(1)
+
+    generate_database(sys.argv[1])
