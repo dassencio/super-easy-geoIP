@@ -2,3 +2,11 @@ Options +ExecCGI
 AddHandler cgi-script .py
 DirectoryIndex easy-geoip.py
 
+# Allow public access only to the root URL and to easy-geoip.py.
+Order Allow,Deny
+<FilesMatch "^easy-geoip\.py$">
+    Allow from all
+</FilesMatch>
+<FilesMatch "^$">
+    Allow from all
+</FilesMatch>
