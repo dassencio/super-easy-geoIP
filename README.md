@@ -1,4 +1,5 @@
-[![Build Status](https://api.travis-ci.com/dassencio/easy-geoip.svg?branch=master)](https://travis-ci.com/dassencio/easy-geoip)
+[![Build status](https://api.travis-ci.com/dassencio/easy-geoip.svg?branch=master)](https://travis-ci.com/dassencio/easy-geoip)
+![Static code analysis](https://github.com/dassencio/easy-geoip/workflows/Static%20code%20analysis/badge.svg)
 
 # Description
 
