@@ -20,7 +20,7 @@ jobs:
 
     # For PRs, checkout the PR's head instead of the merge commit.
     - name: Checkout pull request head
-      if: ${{ github.event_name == 'pull_request' }}
+      if: github.event_name == 'pull_request'
       run: git checkout HEAD^2
 
     - name: Initialize CodeQL
