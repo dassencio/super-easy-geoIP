@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  vulnerability-scan:
-    name: Scan code for vulnerabilities
+  codeql:
+    name: Scan code with CodeQL
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,7 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: python
+        queries: security-and-quality
 
     - name: Perform CodeQL analysis
       uses: github/codeql-action/analyze@v1
